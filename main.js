@@ -76,7 +76,7 @@ function generateGuess(num_oper, numbers) {
 }
 
 function okGuess(num) {
-    return (num == Math.round(num) && num > 100 && num < 500);
+    return (num == Math.round(num) && num > 100 && num < MAX*20 && !tooEasy(num, numbers));
 }
 
 function handleClick(event) {
@@ -148,3 +148,16 @@ function getSeed() {
     let now = new Date();
     return now.toISOString().replaceAll("-", "").replaceAll("T", "").replaceAll(":", "").substring(0, 12);
 }
+
+function tooEasy(guess, numList) {
+    for (let i = numList.length - 1; i > 0; i--) {
+      for (let j = i - 1; j >= 0; j--) {
+        let product = numList[i] * numList[j]
+        if (product == guess) {
+          return true
+        }
+      }
+    }
+    return false
+  }
+  
