@@ -43,6 +43,7 @@ body {
     border: 1vmin dashed black;
     border-radius: 50%;
     overflow: hidden;
+    cursor: pointer;
 }
 
 #operations {

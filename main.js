@@ -97,8 +97,9 @@ function handleClick(event) {
             fillNumbers(current_numbers);
             $('.oper').removeClass('selected');
             $('.number').removeClass('selected');
-            first_selected = false;
             oper_selected = false;
+            $($('.number')[second_index]).addClass('selected');
+            
             if(result == toguess) {
                 games++;
                 total_time+= Math.round((Date.now()-start_time)/1000);
