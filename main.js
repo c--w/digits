@@ -35,7 +35,9 @@ function initGame() {
     current_numbers = [...numbersSorted];
     undo_stack = [];
     $("#games").text(games);
-    $("#time").text(total_time)
+    $("#time").text(total_time);
+    if(games)
+        $("#avg").text(Math.round(total_time/games));
 }
 
 function fillNumbers(numbers) {
