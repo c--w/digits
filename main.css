@@ -40,7 +40,7 @@ body {
     text-align: center;
     width: 10vmax;
     height: 10vmax;
-    border: 1vmin dashed black;
+    border: 0.5vmin dashed black;
     border-radius: 50%;
     overflow: hidden;
     cursor: pointer;
@@ -52,7 +52,7 @@ body {
 }
 
 #operations i {
-    border: 2px solid black;
+    border: none;
     width: 7vmax;
     height: 7vmax;
     margin: 1.1vmax;

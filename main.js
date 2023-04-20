@@ -6,8 +6,6 @@ var numbers;
 var toguess = 0;
 var oper = ['+', '-', '*', '/'];
 var seed;
-var first_selected = false;
-var oper_selected = false;
 var undo_stack = [];
 var current_numbers;
 var total_time = 0;
@@ -35,7 +33,6 @@ function initGame() {
     $('#guess').html(toguess);
     fillNumbers(numbersSorted);
     $($('.number')[5]).addClass('selected');
-    first_selected = true;
     current_numbers = [...numbersSorted];
     undo_stack = [];
     $("#games").text(games);
@@ -89,7 +86,7 @@ function handleClick(event) {
             fillNumbers(current_numbers);
         }
     } else if (el.hasClass('number')) {
-        if (first_selected && oper_selected) {
+        if (first_selected() && oper_selected()) {
             undo_stack.push([...current_numbers]);
             let first_index = $('.number.selected').data('i');
             let second_index = el.data('i');
@@ -105,7 +102,6 @@ function handleClick(event) {
             fillNumbers(current_numbers);
             $('.oper').removeClass('selected');
             $('.number').removeClass('selected');
-            oper_selected = false;
             $($('.number')[second_index]).addClass('selected');
             if (result == toguess) {
                 games++;
@@ -116,25 +112,20 @@ function handleClick(event) {
             if (el.hasClass('selected')) {
                 el.removeClass('selected');
                 $('.oper').removeClass('selected');
-                first_selected = false;
-                oper_selected = false;
                 return;
             }
             $('.number').removeClass('selected');
             el.addClass('selected');
-            first_selected = true;
         }
     } else if (el.hasClass('oper')) {
-        if (!first_selected)
+        if (!first_selected())
             return;
         if (el.hasClass('selected')) {
             el.removeClass('selected');
-            oper_selected = false;
             return;
         }
         $('.oper').removeClass('selected');
         el.addClass('selected');
-        oper_selected = true;
     }
 }
 
@@ -171,3 +162,6 @@ function tooEasy(guess, numList) {
     }
     return false
 }
+
+var first_selected = () => $('.number.selected').length;
+var oper_selected = () => $('.oper.selected').length;
