@@ -18,7 +18,7 @@ function initGame() {
     start_time = Date.now();
     numbers = [];
     for (let i = 0; i < 6; i++) {
-        let n = Math.ceil(rand(seed) * MAX);
+        let n = Math.ceil(rand(seed) * rand(seed) * MAX);
         numbers.push(n);
         seed++;
     }
@@ -90,8 +90,11 @@ function handleClick(event) {
         if (first_selected && oper_selected) {
             undo_stack.push([...current_numbers]);
             let first_index = $('.number.selected').data('i');
-            var first = current_numbers[first_index];
             let second_index = el.data('i');
+            if(first_index == second_index) {
+                return;
+            }
+            var first = current_numbers[first_index];
             var second = current_numbers[second_index];
             var oper = $('.oper.selected').attr('oper')
             var result = eval(first + oper + second);
