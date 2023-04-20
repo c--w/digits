@@ -1,0 +1,67 @@
+@import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css");
+
+body {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    font-weight: 900;
+}
+
+#numbers,
+#operations,
+#guess {
+    align-self: center;
+    font-size: 4vmax;
+    margin-top: 4vmax;
+    
+}
+#guess {
+    font-size: 6vmax;
+}
+#numbers {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    grid-column-gap: 2vmin;
+    grid-row-gap: 2vmin;
+}
+
+.number, #operations i {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    flex-direction: column;
+    text-align: center;
+    width: 10vmax;
+    height: 10vmax;
+    border: 1vmin dashed black;
+    border-radius: 50%;
+}
+
+#operations {
+    display: flex;
+    flex-direction: row;
+}
+#operations i {
+    border: 2px solid black;
+    width: 7vmax;
+    height: 7vmax;
+    margin: 1vmax;
+    color: white;
+    background-color: black;
+}
+
+.selected, #operations i.selected {
+    background-color: #00aa00;
+    border: 0;
+}
+
+.hidden {
+    visibility: hidden;
+}
+
+#stats {
+    position:fixed;
+    top: 1vw;
+    left: 1vw;
+}
