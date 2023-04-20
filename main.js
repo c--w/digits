@@ -13,7 +13,7 @@ var current_numbers;
 var total_time = 0;
 var games = 0;
 var start_time = 0;
-seed = Number(getSeed() + '00');
+seed = Number(getSeed() + '0000');
 function initGame() {
     start_time = Date.now();
     numbers = [];
@@ -147,7 +147,7 @@ function rand(a) {
 
 function getSeed() {
     let now = new Date();
-    return now.toISOString().replaceAll("-", "").replaceAll("T", "").replaceAll(":", "").substring(0, 12);
+    return now.toISOString().replaceAll("-", "").replaceAll("T", "").replaceAll(":", "").substring(2, 12);
 }
 
 function tooEasy(guess, numList) {
@@ -156,6 +156,16 @@ function tooEasy(guess, numList) {
             let product = numList[i] * numList[j]
             if (product == guess) {
                 return true
+            }
+        }
+    }
+    for (let i = numList.length - 1; i > 0; i--) {
+        for (let j = i - 1; j >= 0; j--) {
+            for (let k = j - 1; k >= 0; k--) {
+                let product = numList[i] * numList[j] * numList[k];
+                if (product == guess) {
+                    return true
+                }   
             }
         }
     }
