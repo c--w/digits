@@ -26,10 +26,12 @@ function initGame() {
     numbersSorted.sort((a, b) => a - b);
     console.log(numbers);
     num_oper = Math.round(rand(seed) * 1) + 4;
+    let obj;
     do {
-        toguess = generateGuess(num_oper, [...numbers]);
-    } while (!okGuess(toguess))
-    console.log(toguess);
+        obj = generateGuess(num_oper, [...numbers]);
+    } while (!okGuess(obj.guess))
+    console.log(obj.operations);
+    toguess = obj.guess;
     $('#guess').html(toguess);
     fillNumbers(numbersSorted);
     current_numbers = [...numbersSorted];
@@ -54,7 +56,8 @@ function fillNumbers(numbers) {
 }
 
 function generateGuess(num_oper, numbers) {
-    let result;
+    let guess;
+    let operations = [];
     for (let j = 0; j < num_oper; j++) {
         seed++;
         let first = numbers.splice(Math.floor(rand(seed) * rand(seed) * numbers.length), 1)[0];
@@ -65,11 +68,11 @@ function generateGuess(num_oper, numbers) {
         let ev = first + op + second;
         ev = ev.replace("--", "+");
         ev = ev.replace("+-", "-");
-        result = eval(ev);
-        numbers.unshift(result);
-        console.log(ev, numbers);
+        guess = eval(ev);
+        numbers.unshift(guess);
+        operations.push(ev);
     }
-    return result;
+    return {guess: guess, operations: operations};
 }
 
 function okGuess(num) {
