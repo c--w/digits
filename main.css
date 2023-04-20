@@ -58,7 +58,10 @@ body {
     color: white;
     background-color: black;
     border: 0;
+    font-style: normal;
+    font-weight: 600;
 }
+
 #operations i.undo {
     background-color: hsl(210 100% 40%);
 }
