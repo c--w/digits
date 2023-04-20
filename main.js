@@ -34,12 +34,14 @@ function initGame() {
     toguess = obj.guess;
     $('#guess').html(toguess);
     fillNumbers(numbersSorted);
+    $($('.number')[5]).addClass('selected');
+    first_selected = true;
     current_numbers = [...numbersSorted];
     undo_stack = [];
     $("#games").text(games);
     $("#time").text(total_time);
-    if(games)
-        $("#avg").text(Math.round(total_time/games));
+    if (games)
+        $("#avg").text(Math.round(total_time / games));
 }
 
 function fillNumbers(numbers) {
@@ -72,11 +74,11 @@ function generateGuess(num_oper, numbers) {
         numbers.unshift(guess);
         operations.push(ev);
     }
-    return {guess: guess, operations: operations};
+    return { guess: guess, operations: operations };
 }
 
 function okGuess(num) {
-    return (num == Math.round(num) && num > 100 && num < MAX*20 && !tooEasy(num, numbers));
+    return (num == Math.round(num) && num > 100 && num < MAX * 20 && !tooEasy(num, numbers));
 }
 
 function handleClick(event) {
@@ -91,7 +93,7 @@ function handleClick(event) {
             undo_stack.push([...current_numbers]);
             let first_index = $('.number.selected').data('i');
             let second_index = el.data('i');
-            if(first_index == second_index) {
+            if (first_index == second_index) {
                 return;
             }
             var first = current_numbers[first_index];
@@ -105,11 +107,10 @@ function handleClick(event) {
             $('.number').removeClass('selected');
             oper_selected = false;
             $($('.number')[second_index]).addClass('selected');
-            
-            if(result == toguess) {
+            if (result == toguess) {
                 games++;
-                total_time+= Math.round((Date.now()-start_time)/1000);
-                initGame();         
+                total_time += Math.round((Date.now() - start_time) / 1000);
+                initGame();
             }
         } else {
             if (el.hasClass('selected')) {
@@ -151,13 +152,12 @@ function getSeed() {
 
 function tooEasy(guess, numList) {
     for (let i = numList.length - 1; i > 0; i--) {
-      for (let j = i - 1; j >= 0; j--) {
-        let product = numList[i] * numList[j]
-        if (product == guess) {
-          return true
+        for (let j = i - 1; j >= 0; j--) {
+            let product = numList[i] * numList[j]
+            if (product == guess) {
+                return true
+            }
         }
-      }
     }
     return false
-  }
-  
+}
