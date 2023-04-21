@@ -13,9 +13,9 @@ var start_time = 0;
 var seed;
 initSeed();
 function initGame() {
-    var color = (Math.random() * 20+235 << 0).toString(16)+ (Math.random() * 20+235 << 0).toString(16)+ (Math.random() * 20+235 << 0).toString(16);
-    var url = "https://bg.siteorigin.com/api/image?2x=0&blend=40&color=%23"+color+"&intensity=10&invert=0&noise=0&pattern="+g_patterns[Math.floor(Math.random()*g_patterns.length)];
-    $('body').css('background-image', 'url('+url+')');
+    var color = (Math.random() * 20 + 235 << 0).toString(16) + (Math.random() * 20 + 235 << 0).toString(16) + (Math.random() * 20 + 235 << 0).toString(16);
+    var url = "https://bg.siteorigin.com/api/image?2x=0&blend=40&color=%23" + color + "&intensity=10&invert=0&noise=0&pattern=" + g_patterns[Math.floor(Math.random() * g_patterns.length)];
+    $('body').css('background-image', 'url(' + url + ')');
     $('#undo').addClass('empty');
     numbers = [];
     for (let i = 0; i < 6; i++) {
@@ -70,7 +70,7 @@ function generateGuess(num_oper, numbers) {
             ev = ev.replace("--", "+");
             ev = ev.replace("+-", "-");
             guess = eval(ev);
-        } while(guess == 0 || guess == first || guess == second)
+        } while (guess == 0 || guess == first || guess == second)
         numbers.unshift(guess);
         operations.push(ev);
     }
@@ -87,7 +87,7 @@ function handleClick(event) {
         if (undo_stack.length > 0) {
             current_numbers = undo_stack.pop();
             fillNumbers(current_numbers);
-            if(!undo_stack.length)
+            if (!undo_stack.length)
                 $('#undo').addClass('empty');
         }
     } else if (el.hasClass('number')) {
@@ -123,7 +123,7 @@ function handleClick(event) {
                 return;
             } else {
                 let first_index = $('.number.selected').data('i');
-                if(first_index) {
+                if (first_index) {
                     $($('.number')[first_index]).removeClass('selected');
                 }
             }
@@ -142,7 +142,7 @@ function handleClick(event) {
 }
 
 function rand() {
-    seed++;    
+    seed++;
     let t = seed += 0x6D2B79F5;
     t = Math.imul(t ^ t >>> 15, t | 1);
     t ^= t + Math.imul(t ^ t >>> 7, t | 61);
@@ -170,7 +170,7 @@ function tooEasy(guess, numList) {
                 let product = numList[i] * numList[j] * numList[k];
                 if (product == guess) {
                     return true
-                }   
+                }
             }
         }
     }
