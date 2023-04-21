@@ -11,6 +11,7 @@ body {
     justify-content: center;
     flex-direction: column;
     font-weight: 900;
+    background-color: beige;
 }
 
 #numbers,
