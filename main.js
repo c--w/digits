@@ -25,10 +25,9 @@ function initGame() {
     let numbersSorted = [...numbers]
     numbersSorted.sort((a, b) => a - b);
     console.log(numbers);
-    num_oper = Math.round(rand() + 4);
     let obj;
     do {
-        obj = generateGuess(num_oper, [...numbers]);
+        obj = generateGuess([...numbers]);
     } while (!okGuess(obj.guess))
     console.log(obj.operations);
     toguess = obj.guess;
@@ -57,10 +56,10 @@ function fillNumbers(numbers) {
 
 }
 
-function generateGuess(num_oper, numbers) {
+function generateGuess(numbers) {
     let guess;
     let operations = [];
-    for (let j = 0; j < num_oper; j++) {
+    for (let j = 0; j < 5; j++) {
         let first = numbers.splice(Math.floor(Math.pow(rand(), 1.5) * numbers.length), 1)[0];
         let second = numbers.splice(Math.floor(rand() * numbers.length), 1)[0];
         let ev;
@@ -123,7 +122,7 @@ function handleClick(event) {
                 return;
             } else {
                 let first_index = $('.number.selected').data('i');
-                if (first_index) {
+                if (first_index != undefined) {
                     $($('.number')[first_index]).removeClass('selected');
                 }
             }
