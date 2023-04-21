@@ -13,7 +13,8 @@ var start_time = 0;
 var seed;
 initSeed();
 function initGame() {
-    var url = "https://bg.siteorigin.com/api/image?2x=0&blend=41&color=%23f5f1e0&intensity=51&invert=0&noise=0&pattern="+g_patterns[Math.floor(Math.random()*g_patterns.length)];
+    var color = (Math.random() * 20+235 << 0).toString(16)+ (Math.random() * 20+235 << 0).toString(16)+ (Math.random() * 20+235 << 0).toString(16);
+    var url = "https://bg.siteorigin.com/api/image?2x=0&blend=40&color=%23"+color+"&intensity=10&invert=0&noise=0&pattern="+g_patterns[Math.floor(Math.random()*g_patterns.length)];
     $('body').css('background-image', 'url('+url+')');
     $('#undo').addClass('empty');
     numbers = [];
