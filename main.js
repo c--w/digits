@@ -60,7 +60,7 @@ function generateGuess(numbers) {
     let guess;
     let operations = [];
     for (let j = 0; j < 5; j++) {
-        let first = numbers.splice(Math.floor(Math.pow(rand(), 1.5) * numbers.length), 1)[0];
+        let first = numbers.splice(Math.floor(Math.pow(rand(), 1) * numbers.length), 1)[0];
         let second = numbers.splice(Math.floor(rand() * numbers.length), 1)[0];
         let ev;
         do {
