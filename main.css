@@ -97,22 +97,25 @@ body {
 }
 
 #stats {
-    font-size: 1.6vmax;
+    font-size: 1.8vmax;
     font-weight: 400;
     position:fixed;
     bottom: 1vw;
     left: 1vw;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    grid-column-gap: 2vmin;
+    grid-row-gap: 0.2vmin;
 }
 
 #seed {
     font-weight: 400;
-    font-size: 1.4vmax;
+    font-size: 2vmax;
     position:fixed;
-    bottom: 1vw;
-    right: 1vw;
+    bottom: 2vw;
+    right: 2vw;
     cursor: pointer;
-}
-#seed span {
     color:dodgerblue;
 }
 #share-url {

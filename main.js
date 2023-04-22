@@ -46,7 +46,6 @@ function initGame() {
         max_target = 1000;
     } 
     startseed = seed;
-    $("#seed span").text(startseed);
     let seed_url;
     if(gamemode == 1) {
         seed_url = 'e' + startseed;
