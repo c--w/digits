@@ -233,6 +233,30 @@ function tooEasy(guess, numList) {
                 if (product == guess) {
                     return true
                 }
+                product = numList[i] * numList[j] + numList[k];
+                if (product == guess) {
+                    return true
+                }
+                product = numList[j] * numList[k] + numList[i] ;
+                if (product == guess) {
+                    return true
+                }
+                product = numList[i] * numList[k] + numList[j] ;
+                if (product == guess) {
+                    return true
+                }
+                product = numList[i] * numList[j] - numList[k];
+                if (product == guess) {
+                    return true
+                }
+                product = numList[j] * numList[k] - numList[i] ;
+                if (product == guess) {
+                    return true
+                }
+                product = numList[i] * numList[k] - numList[j] ;
+                if (product == guess) {
+                    return true
+                }
             }
         }
     }

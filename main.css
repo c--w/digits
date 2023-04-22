@@ -100,8 +100,8 @@ body {
     font-size: 1.8vmax;
     font-weight: 400;
     position:fixed;
-    bottom: 1vw;
-    left: 1vw;
+    bottom: 1.5vmax;
+    left: 1.5vmax;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     grid-template-rows: repeat(4, 1fr);
@@ -113,8 +113,8 @@ body {
     font-weight: 400;
     font-size: 2vmax;
     position:fixed;
-    bottom: 2vw;
-    right: 2vw;
+    bottom: 1.5vmax;
+    right: 1.5vmax;
     cursor: pointer;
     color:dodgerblue;
 }
