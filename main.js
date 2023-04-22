@@ -1,7 +1,8 @@
-onload = (event) => initGame();
+onload = (event) => init();
 window.onclick = (event) => handleClick(event);
 
-var MAX = 25;
+var max_number = 25;
+var max_target = 500;
 var numbers;
 var toguess = 0;
 var oper = ['*', '+', '-', '/'];
@@ -13,20 +14,55 @@ var games = 0;
 var start_time = 0;
 var seed;
 var startseed;
-initSeed();
+var gamemode;
+function init() {
+    initSeed();
+    if(!gamemode) // try cookie
+        gamemode = Number(getCookie("gamemode"));
+    if (!gamemode) { // try select
+        gamemode = $("#gamemode").val();
+    }
+    $("#gamemode").val(gamemode);
+    setCookie("gamemode", gamemode, 730);
+    $("#gamemode").on("change", changeGame);
+    initGame();
+}
+
+function changeGame() {
+    gamemode = $("#gamemode").val();
+    setCookie("gamemode", gamemode, 730);
+    initGame();
+}
 function initGame() {
-    var color = (Math.random() * 20 + 235 << 0).toString(16) + (Math.random() * 20 + 235 << 0).toString(16) + (Math.random() * 20 + 235 << 0).toString(16);
-    var url = "https://bg.siteorigin.com/api/image?2x=0&blend=40&color=%23" + color + "&intensity=10&invert=0&noise=0&pattern=" + g_patterns[Math.floor(Math.random() * g_patterns.length)];
-    $('body').css('background-image', 'url(' + url + ')');
+    setBckg();
+    if(gamemode == 1) {
+        max_number = 10;
+        max_target = 100
+    } else if(gamemode == 2) {
+        max_number = 25;
+        max_target = 500;
+    } else if(gamemode == 3) {
+        max_number = 50;
+        max_target = 1000;
+    } 
     startseed = seed;
     $("#seed span").text(startseed);
-    var url = window.location.origin + window.location.pathname + "#" + startseed;
+    let seed_url;
+    if(gamemode == 1) {
+        seed_url = 'e' + startseed;
+    } else if(gamemode == 2) {
+        seed_url = '' + startseed;
+    } else if(gamemode == 3) {
+        seed_url = 'h' + startseed;
+    } 
+    var url = window.location.origin + window.location.pathname + "#" + seed_url;
     $("#share-url").val(url);
     $('#undo').addClass('empty');
     numbers = [];
-    for (let i = 0; i < 6; i++) {
-        let n = Math.floor(Math.pow(rand(), 1.5) * MAX) + 1;
-        numbers.push(n);
+    while (numbers.length < 6) {
+        let n = Math.floor(Math.pow(rand(), 1.5) * max_number) + 1;
+        if(!numbers.includes(n))
+            numbers.push(n);
     }
     let numbersSorted = [...numbers]
     numbersSorted.sort((a, b) => a - b);
@@ -84,7 +120,12 @@ function generateGuess(numbers) {
 }
 
 function okGuess(num) {
-    return (num == Math.round(num) && num > 100 && num < MAX * 20 && !tooEasy(num, numbers));
+    if(gamemode == 1)
+        return (num == Math.round(num) && num > 50 && num <= 100 && !tooEasy(num, numbers));
+    else if(gamemode == 2)
+        return (num == Math.round(num) && num > 100 && num <= 500 && !tooEasy(num, numbers));
+    else if(gamemode == 3)
+        return (num == Math.round(num) && num > 200 && num <= 1000 && !tooEasy(num, numbers));
 }
 
 function handleClick(event) {
@@ -158,7 +199,17 @@ function rand() {
 
 function initSeed() {
     if (window.location.hash) {
-        seed = Number(window.location.hash.substring(1));
+        seed = window.location.hash.substring(1);
+        if(seed.startsWith("e")){
+            gamemode = 1;
+            seed = seed.substring(1);
+        } else if(seed.startsWith("h")){
+            gamemode = 3;
+            seed = seed.substring(1);
+        } else {
+            gamemode = 2;
+        }
+        seed = Number(seed)
         if (!isNaN(seed))
             return;
     }
@@ -187,6 +238,12 @@ function tooEasy(guess, numList) {
         }
     }
     return false
+}
+
+function setBckg() {
+    var color = (Math.random() * 20 + 235 << 0).toString(16) + (Math.random() * 20 + 235 << 0).toString(16) + (Math.random() * 20 + 235 << 0).toString(16);
+    var url = "https://bg.siteorigin.com/api/image?2x=0&blend=40&color=%23" + color + "&intensity=10&invert=0&noise=0&pattern=" + g_patterns[Math.floor(Math.random() * g_patterns.length)];
+    $('body').css('background-image', 'url(' + url + ')');
 }
 
 var first_selected = () => $('.number.selected').length;

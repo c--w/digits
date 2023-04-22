@@ -14,6 +14,14 @@
   <link rel="stylesheet" href="main.css">
 </head>
 <body>
+  <div id="menu" class="input-group">
+    <select class="form-select" id="gamemode" name="gamemode">
+      <option value="1">Easy</option>
+      <option selected value="2">Normal</option>
+      <option value="3">Hard</option>
+    </select>
+  </div>
+
     <div id="guess"></div>
     <div id="numbers"></div>
     <div id="operations">
@@ -35,6 +43,7 @@
     <input id="share-url" type="text"> 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
+    <script src="cookie.js"></script>
     <script src="utils.js"></script>
     <script src="main.js"></script>
   </body>

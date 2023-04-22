@@ -1,5 +1,8 @@
 @import url("https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css");
 
+html {
+    font-size: 2vmax;
+}
 * {
     transition: all .2s ease-out;
     box-sizing: border-box;
@@ -14,12 +17,16 @@ body {
     background-color: beige;
 }
 
+#menu {
+    align-self: center;
+    width: auto;
+}
 #numbers,
 #operations,
 #guess {
     align-self: center;
     font-size: 4vmax;
-    margin-top: 4vmax;
+    margin-top: 3vh;
     
 }
 #guess {
@@ -90,7 +97,7 @@ body {
 }
 
 #stats {
-    font-size: smaller;
+    font-size: 1.6vmax;
     font-weight: 400;
     position:fixed;
     bottom: 1vw;
@@ -99,7 +106,7 @@ body {
 
 #seed {
     font-weight: 400;
-    font-size: x-small;
+    font-size: 1.4vmax;
     position:fixed;
     bottom: 1vw;
     right: 1vw;
