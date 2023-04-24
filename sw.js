@@ -22,6 +22,8 @@ var URLS = [
   `${GHPATH}/bootstrap-icons.css`,
   `${GHPATH}/bootstrap.min.css`,
   `${GHPATH}/bootstrap.min.js`,
+  `${GHPATH}/bootstrap.min.css.map`,
+  `${GHPATH}/bootstrap.min.js.map`,
   `${GHPATH}/cookie.js`,
   `${GHPATH}/favicon-16x16.png`,
   `${GHPATH}/favicon-32x32.png`,
@@ -31,5 +33,5 @@ var URLS = [
   `${GHPATH}/main.css`,
   `${GHPATH}/main.js`,
   `${GHPATH}/site.webmanifest`,
-  `${GHPATH}/utils.js`,
+  `${GHPATH}/utils.js`
 ]
