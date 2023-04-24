@@ -1,6 +1,4 @@
 onload = (event) => init();
-window.onclick = (event) => handleClick(event);
-window.ontouchstart = (event) => handleClick(event);
 var max_number = 25;
 var max_target = 500;
 var numbers;
@@ -16,6 +14,11 @@ var seed;
 var startseed;
 var gamemode;
 function init() {
+    if ("ontouchstart" in document.documentElement) {
+        document.ontouchstart = (event) => handleClick(event);
+    }   else {
+        document.onclick = (event) => handleClick(event);
+    }    
     initSeed();
     if(!gamemode) // try cookie
         gamemode = Number(getCookie("gamemode"));
@@ -127,11 +130,8 @@ function okGuess(num) {
         return (num == Math.round(num) && num > 200 && num <= 1000 && !tooEasy(num, numbers));
 }
 
-var clicked_time;
 function handleClick(event) {
-    if(Date.now() - clicked_time < 200)
-        return;
-    clicked_time = Date.now();
+    console.log(event);
     let el = $(event.target);
     effect(el);
     if (el.hasClass('undo')) {
