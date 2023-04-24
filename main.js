@@ -1,6 +1,6 @@
 onload = (event) => init();
 window.onclick = (event) => handleClick(event);
-
+window.ontouchstart = (event) => handleClick(event);
 var max_number = 25;
 var max_target = 500;
 var numbers;
@@ -127,9 +127,15 @@ function okGuess(num) {
         return (num == Math.round(num) && num > 200 && num <= 1000 && !tooEasy(num, numbers));
 }
 
+var clicked_time;
 function handleClick(event) {
+    if(Date.now() - clicked_time < 200)
+        return;
+    clicked_time = Date.now();
     let el = $(event.target);
+    effect(el);
     if (el.hasClass('undo')) {
+        event.stopPropagation();
         if (undo_stack.length > 0) {
             current_numbers = undo_stack.pop();
             fillNumbers(current_numbers);
@@ -137,6 +143,7 @@ function handleClick(event) {
                 $('#undo').addClass('empty');
         }
     } else if (el.hasClass('number')) {
+        event.stopPropagation();
         if (first_selected() && oper_selected()) {
             undo_stack.push([...current_numbers]);
             $('#undo').removeClass('empty');
@@ -177,6 +184,7 @@ function handleClick(event) {
             el.addClass('selected');
         }
     } else if (el.hasClass('oper')) {
+        event.stopPropagation();
         if (!first_selected())
             return;
         if (el.hasClass('selected')) {
@@ -229,10 +237,14 @@ function tooEasy(guess, numList) {
     for (let i = numList.length - 1; i > 0; i--) {
         for (let j = i - 1; j >= 0; j--) {
             for (let k = j - 1; k >= 0; k--) {
-                let product = numList[i] * numList[j] * numList[k];
+                if(gamemode == 1) // no restrictions for easy
+                    return;
+                // no direct product
+                let product = numList[i] * numList[j] * numList[k]; 
                 if (product == guess) {
                     return true
                 }
+                // no a*b+c
                 product = numList[i] * numList[j] + numList[k];
                 if (product == guess) {
                     return true
@@ -245,6 +257,7 @@ function tooEasy(guess, numList) {
                 if (product == guess) {
                     return true
                 }
+                // no a*b-c
                 product = numList[i] * numList[j] - numList[k];
                 if (product == guess) {
                     return true
@@ -257,6 +270,35 @@ function tooEasy(guess, numList) {
                 if (product == guess) {
                     return true
                 }
+                if(gamemode == 2)
+                    return;
+                // no a*(b+c)
+                product = numList[i] * (numList[j] + numList[k]);
+                if (product == guess) {
+                    return true
+                }
+                product = numList[j] * (numList[k] + numList[i]);
+                if (product == guess) {
+                    return true
+                }
+                product = numList[i] * (numList[k] + numList[j]) ;
+                if (product == guess) {
+                    return true
+                }
+                // no a*(b-c)
+                product = numList[i] * (numList[j] - numList[k]);
+                if (product == guess) {
+                    return true
+                }
+                product = numList[j] * (numList[k] - numList[i]);
+                if (product == guess) {
+                    return true
+                }
+                product = numList[i] * (numList[k] - numList[j]);
+                if (product == guess) {
+                    return true
+                }
+                
             }
         }
     }
@@ -267,6 +309,11 @@ function setBckg() {
     var color = (Math.random() * 20 + 235 << 0).toString(16) + (Math.random() * 20 + 235 << 0).toString(16) + (Math.random() * 20 + 235 << 0).toString(16);
     var url = "https://bg.siteorigin.com/api/image?2x=0&blend=40&color=%23" + color + "&intensity=10&invert=0&noise=0&pattern=" + g_patterns[Math.floor(Math.random() * g_patterns.length)];
     $('body').css('background-image', 'url(' + url + ')');
+}
+
+function effect(el) {
+    el.addClass('effect');
+    setTimeout((el) => el.removeClass('effect'), 100, el);
 }
 
 var first_selected = () => $('.number.selected').length;
