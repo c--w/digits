@@ -14,11 +14,7 @@ var seed;
 var startseed;
 var gamemode;
 function init() {
-    if ("ontouchstart" in document.documentElement) {
-        document.ontouchstart = (event) => handleClick(event);
-    }   else {
-        document.onclick = (event) => handleClick(event);
-    }    
+    document.onclick = (event) => handleClick(event);
     initSeed();
     if(!gamemode) // try cookie
         gamemode = Number(getCookie("gamemode"));
@@ -133,7 +129,6 @@ function okGuess(num) {
 function handleClick(event) {
     console.log(event);
     let el = $(event.target);
-    ev.preventDefault();
     effect(el);
     if (el.hasClass('undo')) {
         if (undo_stack.length > 0) {
