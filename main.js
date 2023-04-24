@@ -133,6 +133,7 @@ function okGuess(num) {
 function handleClick(event) {
     console.log(event);
     let el = $(event.target);
+    ev.preventDefault();
     effect(el);
     if (el.hasClass('undo')) {
         if (undo_stack.length > 0) {
