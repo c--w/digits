@@ -135,7 +135,6 @@ function handleClick(event) {
     let el = $(event.target);
     effect(el);
     if (el.hasClass('undo')) {
-        event.stopPropagation();
         if (undo_stack.length > 0) {
             current_numbers = undo_stack.pop();
             fillNumbers(current_numbers);
@@ -143,7 +142,6 @@ function handleClick(event) {
                 $('#undo').addClass('empty');
         }
     } else if (el.hasClass('number')) {
-        event.stopPropagation();
         if (first_selected() && oper_selected()) {
             undo_stack.push([...current_numbers]);
             $('#undo').removeClass('empty');
@@ -184,7 +182,6 @@ function handleClick(event) {
             el.addClass('selected');
         }
     } else if (el.hasClass('oper')) {
-        event.stopPropagation();
         if (!first_selected())
             return;
         if (el.hasClass('selected')) {
