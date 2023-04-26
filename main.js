@@ -94,7 +94,21 @@ function fillNumbers(numbers) {
             div.addClass('hidden');
         $('#numbers').append(div)
     })
+}
 
+function setNumbers(numbers) {
+    var numbers_divs = $('.number').toArray();
+    numbers_divs.forEach((div, i) => {
+        let n = numbers[i];
+        var div = $(div);
+        div.text(n)
+        div.data('n', n);
+        div.data('i', i);
+        if (n == 0)
+            div.addClass('hidden');
+        else
+            div.removeClass('hidden');
+    })
 }
 
 function generateGuess(numbers) {
@@ -127,25 +141,26 @@ function okGuess(num) {
 }
 
 function handleClick(event) {
-    console.log(event);
     let el = $(event.target);
     effect(el);
     if (el.hasClass('undo')) {
         if (undo_stack.length > 0) {
             current_numbers = undo_stack.pop();
-            fillNumbers(current_numbers);
+            setNumbers(current_numbers);
+            $('.number').removeClass('selected');
             if (!undo_stack.length)
                 $('#undo').addClass('empty');
         }
     } else if (el.hasClass('number')) {
         if (first_selected() && oper_selected()) {
-            undo_stack.push([...current_numbers]);
-            $('#undo').removeClass('empty');
             let first_index = $('.number.selected').data('i');
             let second_index = el.data('i');
             if (first_index == second_index) {
+                $($('.number')[first_index]).removeClass('selected');
                 return;
             }
+            undo_stack.push([...current_numbers]);
+            $('#undo').removeClass('empty');
             var first = current_numbers[first_index];
             var second = current_numbers[second_index];
             var oper = $('.oper.selected').attr('oper')
