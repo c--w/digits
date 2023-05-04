@@ -24,16 +24,16 @@ function init() {
     $("#gamemode").val(gamemode);
     setCookie("gamemode", gamemode, 730);
     $("#gamemode").on("change", changeGame);
-    initGame();
+    changeGame();
 }
 
 function changeGame() {
     gamemode = $("#gamemode").val();
     setCookie("gamemode", gamemode, 730);
+    setBckg();
     initGame();
 }
 function initGame() {
-    setBckg();
     if(gamemode == 1) {
         max_number = 10;
         max_target = 100
@@ -176,7 +176,9 @@ function handleClick(event) {
             $($('.number')[second_index]).addClass('selected');
             $($('.number')[second_index]).text(result);
             if (result == toguess) {
-                $($('.number')[second_index]).addClass('winner');
+                setTimeout(()=>{
+                    $($('.number')[second_index]).addClass('winner');    
+                }, 110);
                 games++;
                 last_time = Math.round((Date.now() - start_time) / 1000);
                 total_time += last_time; 
