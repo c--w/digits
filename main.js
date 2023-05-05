@@ -16,7 +16,7 @@ var gamemode;
 function init() {
     document.onclick = (event) => handleClick(event);
     initSeed();
-    if(!gamemode) // try cookie
+    if (!gamemode) // try cookie
         gamemode = Number(getCookie("gamemode"));
     if (!gamemode) { // try select
         gamemode = $("#gamemode").val();
@@ -34,32 +34,32 @@ function changeGame() {
     initGame();
 }
 function initGame() {
-    if(gamemode == 1) {
+    if (gamemode == 1) {
         max_number = 10;
         max_target = 100
-    } else if(gamemode == 2) {
+    } else if (gamemode == 2) {
         max_number = 25;
         max_target = 500;
-    } else if(gamemode == 3) {
+    } else if (gamemode == 3) {
         max_number = 50;
         max_target = 1000;
-    } 
+    }
     startseed = seed;
     let seed_url;
-    if(gamemode == 1) {
+    if (gamemode == 1) {
         seed_url = 'e' + startseed;
-    } else if(gamemode == 2) {
+    } else if (gamemode == 2) {
         seed_url = '' + startseed;
-    } else if(gamemode == 3) {
+    } else if (gamemode == 3) {
         seed_url = 'h' + startseed;
-    } 
+    }
     var url = window.location.origin + window.location.pathname + "#" + seed_url;
     $("#share-url").val(url);
     $('#undo').addClass('empty');
     numbers = [];
     while (numbers.length < 6) {
         let n = Math.floor(Math.pow(rand(), 1.5) * max_number) + 1;
-        if(!numbers.includes(n))
+        if (!numbers.includes(n))
             numbers.push(n);
     }
     let numbersSorted = [...numbers]
@@ -76,12 +76,31 @@ function initGame() {
     $($('.number')[5]).addClass('selected');
     current_numbers = [...numbersSorted];
     undo_stack = [];
+    updateStats();
+    start_time = Date.now();
+}
+
+function updateStats() {
     $("#games").text(games);
     $("#last").text(last_time);
     $("#total").text(total_time);
-    if (games)
-        $("#avg").text(Math.round(total_time / games));
-    start_time = Date.now();
+    if (!games)
+        return;
+    let avg = Math.round(total_time / games);
+    $("#avg").text(avg);
+    let key = 'digits' + games + '-' + gamemode;
+    let best = localStorage.getItem(key);
+    if (best) {
+        best = Number(best);
+        if (avg < best) {
+            best = avg;
+        }
+    } else {
+        best = avg;
+    }
+    localStorage.setItem(key, best);
+    $("#best-games").text(games);
+    $("#best").text(best);
 }
 
 function fillNumbers(numbers) {
@@ -132,11 +151,11 @@ function generateGuess(numbers) {
 }
 
 function okGuess(num) {
-    if(gamemode == 1)
+    if (gamemode == 1)
         return (num == Math.round(num) && num > 50 && num <= 100 && !tooEasy(num, numbers));
-    else if(gamemode == 2)
+    else if (gamemode == 2)
         return (num == Math.round(num) && num > 100 && num <= 500 && !tooEasy(num, numbers));
-    else if(gamemode == 3)
+    else if (gamemode == 3)
         return (num == Math.round(num) && num > 200 && num <= 1000 && !tooEasy(num, numbers));
 }
 
@@ -176,12 +195,12 @@ function handleClick(event) {
             $($('.number')[second_index]).addClass('selected');
             $($('.number')[second_index]).text(result);
             if (result == toguess) {
-                setTimeout(()=>{
-                    $($('.number')[second_index]).addClass('winner');    
+                setTimeout(() => {
+                    $($('.number')[second_index]).addClass('winner');
                 }, 110);
                 games++;
                 last_time = Math.round((Date.now() - start_time) / 1000);
-                total_time += last_time; 
+                total_time += last_time;
                 setTimeout(initGame, 2000);
             }
         } else {
@@ -221,10 +240,10 @@ function rand() {
 function initSeed() {
     if (window.location.hash) {
         seed = window.location.hash.substring(1);
-        if(seed.startsWith("e")){
+        if (seed.startsWith("e")) {
             gamemode = 1;
             seed = seed.substring(1);
-        } else if(seed.startsWith("h")){
+        } else if (seed.startsWith("h")) {
             gamemode = 3;
             seed = seed.substring(1);
         } else {
@@ -251,10 +270,10 @@ function tooEasy(guess, numList) {
     for (let i = numList.length - 1; i > 0; i--) {
         for (let j = i - 1; j >= 0; j--) {
             for (let k = j - 1; k >= 0; k--) {
-                if(gamemode == 1) // no restrictions for easy
+                if (gamemode == 1) // no restrictions for easy
                     return;
                 // no direct product
-                let product = numList[i] * numList[j] * numList[k]; 
+                let product = numList[i] * numList[j] * numList[k];
                 if (product == guess) {
                     return true
                 }
@@ -263,11 +282,11 @@ function tooEasy(guess, numList) {
                 if (product == guess) {
                     return true
                 }
-                product = numList[j] * numList[k] + numList[i] ;
+                product = numList[j] * numList[k] + numList[i];
                 if (product == guess) {
                     return true
                 }
-                product = numList[i] * numList[k] + numList[j] ;
+                product = numList[i] * numList[k] + numList[j];
                 if (product == guess) {
                     return true
                 }
@@ -276,15 +295,15 @@ function tooEasy(guess, numList) {
                 if (product == guess) {
                     return true
                 }
-                product = numList[j] * numList[k] - numList[i] ;
+                product = numList[j] * numList[k] - numList[i];
                 if (product == guess) {
                     return true
                 }
-                product = numList[i] * numList[k] - numList[j] ;
+                product = numList[i] * numList[k] - numList[j];
                 if (product == guess) {
                     return true
                 }
-                if(gamemode == 2)
+                if (gamemode == 2)
                     return;
                 // no a*(b+c)
                 product = numList[i] * (numList[j] + numList[k]);
@@ -295,7 +314,7 @@ function tooEasy(guess, numList) {
                 if (product == guess) {
                     return true
                 }
-                product = numList[i] * (numList[k] + numList[j]) ;
+                product = numList[i] * (numList[k] + numList[j]);
                 if (product == guess) {
                     return true
                 }
@@ -312,7 +331,7 @@ function tooEasy(guess, numList) {
                 if (product == guess) {
                     return true
                 }
-                
+
             }
         }
     }
