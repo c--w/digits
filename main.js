@@ -174,10 +174,11 @@ function handleClick(event) {
     } else if (el.hasClass('number')) {
         effect(el);
         if (first_selected() && oper_selected()) {
+            let numbers = $('.number');
             let first_index = $('.number.selected').data('i');
             let second_index = el.data('i');
             if (first_index == second_index) {
-                $($('.number')[first_index]).removeClass('selected');
+                $(numbers[first_index]).removeClass('selected');
                 $('.oper').removeClass('selected');
                 return;
             }
@@ -190,13 +191,14 @@ function handleClick(event) {
             current_numbers[first_index] = 0;
             current_numbers[second_index] = result;
             $('.oper').removeClass('selected');
-            $($('.number')[first_index]).addClass('hidden');
-            $($('.number')[first_index]).removeClass('selected');
-            $($('.number')[second_index]).addClass('selected');
-            $($('.number')[second_index]).text(result);
+            
+            $(numbers[first_index]).removeClass('selected');
+            $(numbers[second_index]).addClass('selected');
+            $(numbers[second_index]).text(result);
+            animatePos(numbers[first_index],  numbers[second_index]);
             if (result == toguess) {
                 setTimeout(() => {
-                    $($('.number')[second_index]).addClass('winner');
+                    $(numbers[second_index]).addClass('winner');
                 }, 110);
                 games++;
                 last_time = Math.round((Date.now() - start_time) / 1000);
@@ -227,6 +229,24 @@ function handleClick(event) {
         $('.oper').removeClass('selected');
         el.addClass('selected');
     }
+}
+
+function animatePos(source, target) {
+    const targetRect = target.getBoundingClientRect();
+    const sourceRect = source.getBoundingClientRect();
+    const deltaX = targetRect.left - sourceRect.left;
+    const deltaY = targetRect.top - sourceRect.top;
+
+
+    $(source).css('z-index', '-1'),
+    $(source).css('transform', `translate(${deltaX}px, ${deltaY}px)`);
+    setTimeout(() => {
+        $(source).addClass('hidden');
+    }, 310);
+    setTimeout(() => {
+        $(source).css('transform', 'none');
+        $(source).css('z-index', 'auto');
+    }, 620);
 }
 
 function rand() {
