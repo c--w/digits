@@ -5,6 +5,7 @@ var numbers;
 var toguess = 0;
 var oper = ['*', '+', '-', '/'];
 var undo_stack = [];
+var undo_stack_oper = [];
 var current_numbers;
 var last_time = 0;
 var total_time = 0;
@@ -28,54 +29,87 @@ function init() {
 }
 
 function changeGame() {
-    gamemode = $("#gamemode").val();
+    gamemode = Number($("#gamemode").val());
     setCookie("gamemode", gamemode, 730);
     setBckg();
     initGame();
 }
 function initGame() {
-    if (gamemode == 1) {
-        max_number = 10;
-        max_target = 100
-    } else if (gamemode == 2) {
-        max_number = 25;
-        max_target = 500;
-    } else if (gamemode == 3) {
-        max_number = 50;
-        max_target = 1000;
-    }
     startseed = seed;
     let seed_url;
     if (gamemode == 1) {
+        max_number = 10;
+        max_target = 100
         seed_url = 'e' + startseed;
     } else if (gamemode == 2) {
+        max_number = 25;
+        max_target = 500;
         seed_url = '' + startseed;
     } else if (gamemode == 3) {
+        max_number = 50;
+        max_target = 1000;
         seed_url = 'h' + startseed;
+    } else if (gamemode > 3) {
+        max_target = gamemode - 4 + 10;
+        max_number = 9;
+        seed_url = String.fromCharCode('t'.charCodeAt(0)+gamemode-4) + startseed;
+        $('#numbers').addClass('get10')
     }
     var url = window.location.origin + window.location.pathname + "#" + seed_url;
     $("#share-url").val(url);
     $('#undo').addClass('empty');
     numbers = [];
-    while (numbers.length < 6) {
-        let n = Math.floor(Math.pow(rand(), 1.5) * max_number) + 1;
-        if (!numbers.includes(n))
-            numbers.push(n);
+    let numbersSorted;
+    if (gamemode < 4) {
+        while (numbers.length < 6) {
+            let n = Math.floor(Math.pow(rand(), 1.5) * max_number) + 1;
+            if (!numbers.includes(n))
+                numbers.push(n);
+        }
+        numbersSorted = [...numbers]
+        numbersSorted.sort((a, b) => a - b);
+        console.log(numbers);
+        let obj;
+        do {
+            obj = generateGuess([...numbers]);
+        } while (!okGuess(obj.guess, numbers))
+        console.log(obj.operations);
+        toguess = obj.guess;
+    } else {
+        toguess = max_target;
+        let temp_numbers;
+        let i = 0;
+        let obj;
+        do {
+            i++;
+            temp_numbers = [];
+            temp_numbers.push(toguess);
+            while (temp_numbers.length < 4) {
+                let n = Math.floor(rand() * max_number) + 1;
+                temp_numbers.push(n);
+            }
+            let j = 0;
+            do {
+                j++;
+                obj = generateGuess10([...temp_numbers]);
+            } while (!okGuess(obj.guess, temp_numbers) && j < 100)
+        } while (!okGuess(obj.guess, temp_numbers) && i < 100)
+        numbers = [...temp_numbers.slice(1)];
+        numbers.push(obj.guess)
+        numbersSorted = [...numbers]
+        numbersSorted.sort((a, b) => a - b);
+        console.log(numbers);
+        console.log(obj.operations);
     }
-    let numbersSorted = [...numbers]
-    numbersSorted.sort((a, b) => a - b);
-    console.log(numbers);
-    let obj;
-    do {
-        obj = generateGuess([...numbers]);
-    } while (!okGuess(obj.guess))
-    console.log(obj.operations);
-    toguess = obj.guess;
     $('#guess').html(toguess);
     fillNumbers(numbersSorted);
     $($('.number')[5]).addClass('selected');
     current_numbers = [...numbersSorted];
     undo_stack = [];
+    if(gamemode>3) {
+        undo_stack_oper = [];
+        $('.oper').removeClass('used');
+    }
     updateStats();
     start_time = Date.now();
 }
@@ -150,13 +184,61 @@ function generateGuess(numbers) {
     return { guess: guess, operations: operations };
 }
 
-function okGuess(num) {
+function generateGuess10(numbers) {
+    let guess;
+    let expressions = [];
+    let temp_oper = [...oper];
+    for (let j = 0; j < 3; j++) {
+        let first = numbers.splice(Math.floor(Math.pow(rand(), 1) * numbers.length), 1)[0];
+        let second = numbers.splice(Math.floor(rand() * numbers.length), 1)[0];
+        let ev;
+        let ind;
+        let c = 0;
+        do {
+            c++;
+            ind = Math.floor(rand() * temp_oper.length);
+            let op = temp_oper[ind];
+            ev = first + op + second;
+            ev = ev.replace("--", "+");
+            ev = ev.replace("+-", "-");
+            guess = eval(ev);
+        } while ((guess == 0 || guess == first || guess == second) && c<100)
+        temp_oper.splice(ind, 1);
+        numbers.unshift(guess);
+        expressions.push(ev);
+    }
+    let ex = expressions.find((e) => {
+        return e.includes(max_target);
+    })
+    let op = ex.match(/[\+\-\*\/]/g);
+    if(op == '+')
+        op = '-';
+    else if(op == '-')
+        op = '+';
+    else if(op == '*')
+        op = '/';
+    else if(op == '/')
+        op = '*';
+    if(expressions.find((e) => {
+        return e.includes(op) && !e.includes(max_target);
+    })) {
+        return  { guess: 100, operations: null }
+    }
+    return { guess: guess, operations: expressions };
+}
+
+function okGuess(num, numbers) {
     if (gamemode == 1)
         return (num == Math.round(num) && num > 50 && num <= 100 && !tooEasy(num, numbers));
     else if (gamemode == 2)
         return (num == Math.round(num) && num > 100 && num <= 500 && !tooEasy(num, numbers));
     else if (gamemode == 3)
         return (num == Math.round(num) && num > 200 && num <= 1000 && !tooEasy(num, numbers));
+    else if (gamemode > 3) {
+        let temp_numbers = [...numbers];
+        temp_numbers.push(num);
+        return !(num > max_number || num < 1 || Math.round(num) != num || tooEasy(max_target, temp_numbers))
+    }
 }
 
 function handleClick(event) {
@@ -170,6 +252,9 @@ function handleClick(event) {
             $('.oper').removeClass('selected');
             if (!undo_stack.length)
                 $('#undo').addClass('empty');
+            if(gamemode>3) {
+                undo_stack_oper.pop().removeClass('used');
+            }
         }
     } else if (el.hasClass('number')) {
         effect(el);
@@ -187,16 +272,22 @@ function handleClick(event) {
             var first = current_numbers[first_index];
             var second = current_numbers[second_index];
             var oper = $('.oper.selected').attr('oper')
+            if(gamemode > 3) {
+                $('.oper.selected').addClass('used');
+                undo_stack_oper.push($('.oper.selected'));
+            }
             var result = eval(first + oper + second);
             current_numbers[first_index] = 0;
             current_numbers[second_index] = result;
             $('.oper').removeClass('selected');
-            
+
             $(numbers[first_index]).removeClass('selected');
             $(numbers[second_index]).addClass('selected');
             $(numbers[second_index]).text(result);
-            animatePos(numbers[first_index],  numbers[second_index]);
+            animatePos(numbers[first_index], numbers[second_index]);
             if (result == toguess) {
+                if(gamemode > 3 && undo_stack.length<3)
+                    return;
                 setTimeout(() => {
                     $(numbers[second_index]).addClass('winner');
                 }, 110);
@@ -219,6 +310,8 @@ function handleClick(event) {
             el.addClass('selected');
         }
     } else if (el.hasClass('oper')) {
+        if(gamemode>3 && el.hasClass('used'))
+            return;
         effect(el);
         if (!first_selected())
             return;
@@ -239,7 +332,7 @@ function animatePos(source, target) {
 
 
     $(source).css('z-index', '-1'),
-    $(source).css('transform', `translate(${deltaX}px, ${deltaY}px)`);
+        $(source).css('transform', `translate(${deltaX}px, ${deltaY}px)`);
     setTimeout(() => {
         $(source).addClass('hidden');
     }, 310);
@@ -266,6 +359,15 @@ function initSeed() {
         } else if (seed.startsWith("h")) {
             gamemode = 3;
             seed = seed.substring(1);
+        } else if (seed.startsWith("t")) {
+            gamemode = 4;
+            seed = seed.substring(1);
+        } else if (seed.startsWith("u")) {
+            gamemode = 5;
+            seed = seed.substring(1);
+        } else if (seed.startsWith("v")) {
+            gamemode = 6;
+            seed = seed.substring(1);
         } else {
             gamemode = 2;
         }
@@ -283,6 +385,10 @@ function tooEasy(guess, numList) {
         for (let j = i - 1; j >= 0; j--) {
             let product = numList[i] * numList[j]
             if (product == guess) {
+                return true
+            }
+            let sum = numList[i] + numList[j]
+            if (sum == guess) {
                 return true
             }
         }

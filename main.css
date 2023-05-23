@@ -40,7 +40,10 @@ body {
     grid-column-gap: 2vmin;
     grid-row-gap: 2vmin;
 }
-
+#numbers.get10 {
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(1, 1fr);
+}
 .number, #operations i {
     display: flex;
     justify-content: center;
@@ -100,7 +103,7 @@ body {
     transition: all 0.1s cubic-bezier(0.5, -0.5, 0.5, 2);
 }
 
-#operations i.undo.empty {
+#operations i.undo.empty, #operations i.used {
     background-color: gray;
 }
 
