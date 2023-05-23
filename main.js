@@ -83,7 +83,6 @@ function initGame() {
         do {
             i++;
             temp_numbers = [];
-            temp_numbers.push(toguess);
             while (temp_numbers.length < 4) {
                 let n = Math.floor(rand() * max_number) + 1;
                 temp_numbers.push(n);
@@ -92,10 +91,11 @@ function initGame() {
             do {
                 j++;
                 obj = generateGuess10([...temp_numbers]);
-            } while (!okGuess(obj.guess, temp_numbers) && j < 100)
-        } while (!okGuess(obj.guess, temp_numbers) && i < 100)
-        numbers = [...temp_numbers.slice(1)];
-        numbers.push(obj.guess)
+            } while (!okGuess(obj.guess, temp_numbers) && j < 500)
+            console.log('j', j);
+        } while (!okGuess(obj.guess, temp_numbers) && i < 200)
+        console.log('i', i);
+        numbers = [...temp_numbers];
         numbersSorted = [...numbers]
         numbersSorted.sort((a, b) => a - b);
         console.log(numbers);
@@ -202,27 +202,10 @@ function generateGuess10(numbers) {
             ev = ev.replace("--", "+");
             ev = ev.replace("+-", "-");
             guess = eval(ev);
-        } while ((guess == 0 || guess == first || guess == second) && c<100)
+        } while ((guess == 0 || guess == first || guess == second) && c<10)
         temp_oper.splice(ind, 1);
         numbers.unshift(guess);
         expressions.push(ev);
-    }
-    let ex = expressions.find((e) => {
-        return e.includes(max_target);
-    })
-    let op = ex.match(/[\+\-\*\/]/g);
-    if(op == '+')
-        op = '-';
-    else if(op == '-')
-        op = '+';
-    else if(op == '*')
-        op = '/';
-    else if(op == '/')
-        op = '*';
-    if(expressions.find((e) => {
-        return e.includes(op) && !e.includes(max_target);
-    })) {
-        return  { guess: 100, operations: null }
     }
     return { guess: guess, operations: expressions };
 }
@@ -235,9 +218,7 @@ function okGuess(num, numbers) {
     else if (gamemode == 3)
         return (num == Math.round(num) && num > 200 && num <= 1000 && !tooEasy(num, numbers));
     else if (gamemode > 3) {
-        let temp_numbers = [...numbers];
-        temp_numbers.push(num);
-        return !(num > max_number || num < 1 || Math.round(num) != num || tooEasy(max_target, temp_numbers))
+        return (num == max_target && !tooEasy(max_target, numbers))
     }
 }
 
