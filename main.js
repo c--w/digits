@@ -14,14 +14,15 @@ var start_time = 0;
 var seed;
 var startseed;
 var gamemode;
+const VERSION = "v1.5";
+
 function init() {
+    $('#version').text(VERSION);
     document.onclick = (event) => handleClick(event);
     initSeed();
-    if (!gamemode) // try cookie
-        gamemode = Number(getCookie("gamemode"));
-    if (!gamemode) { // try select
-        gamemode = $("#gamemode").val();
-    }
+    resolve('gamemode', true);
+    resolve('level', true);
+    resolve('size');
     $("#gamemode").val(gamemode);
     setCookie("gamemode", gamemode, 730);
     $("#gamemode").on("change", changeGame);
@@ -34,6 +35,7 @@ function changeGame() {
     setBckg();
     initGame();
 }
+
 function initGame() {
     startseed = seed;
     let seed_url;
@@ -460,3 +462,26 @@ var first_selected = () => $('.number.selected').length;
 var oper_selected = () => $('.oper.selected').length;
 
 
+function resolve(prop, num) {
+    let value = window[prop];
+    if (typeof value == 'undefined') {
+        value = getCookie(prop);
+        if (!value) {
+            value = $('#' + prop).val();
+            window[prop] = value;
+            return;
+        }
+    }
+    let options = $('#' + prop + ' option');
+    let values = $.map(options, function (option) {
+        return option.value;
+    });
+    if (values.indexOf("" + value) == -1) {
+        value = values[0];
+    }
+    if (num)
+        value = Number(value);
+    window[prop] = value;
+    $('#' + prop).val(value);
+    setCookie(prop, value, 730);
+}

@@ -120,15 +120,22 @@ body {
     grid-row-gap: 0.2vmin;
 }
 
-#seed {
+#seed, #version {
     font-weight: 400;
-    font-size: 2vmax;
-    position:fixed;
+    font-size: min(2.5vmax, 24px);
+    position: fixed;
     bottom: 1.5vmax;
     right: 1.5vmax;
     cursor: pointer;
-    color:dodgerblue;
+    color: dodgerblue;
 }
+
+#version {
+    font-size: min(3vmin, 18px);
+    right: 50vw;
+    z-index: 2;
+}
+
 #share-url {
     position: absolute;
     top: -100px;
